@@ -15,7 +15,9 @@ export class TodoApp extends LitElement {
         <div>
         ${this.todoList.length}
           <ul>
-            ${this.todoList.map((todo) => html`<todo-item">A</todo-item> <br>`)}
+            ${this.todoList.map((todo, index) => html`
+              <todo-item .value="${todo}" .index="${index}" @delete="${this.deleteTodo}"></todo-item>
+            `)}
           </ul>
           </div>
         <div>
@@ -26,13 +28,17 @@ export class TodoApp extends LitElement {
     this.todoList = [...this.todoList, e.detail.name];
   }
 
+  deleteTodo(e: CustomEvent) {
+    this.todoList = [...this.todoList.filter((_, index) => index !== e.detail.index)];
+  }
+
   static styles = css`
     :host {
       width: 100%;
     }
 
     .c-layout {
-      max-width: 300px;
+      max-width: 400px;
       padding: 2rem;
       margin: auto;
       text-align: center;

@@ -6,12 +6,17 @@ export class TodoItem extends LitElement {
   @property()
   value = 'Hello';
 
+  @property()
+  index = 0;
+
   @query('input', true) _input!: HTMLInputElement;
 
   render() {
     return html`
       <input class="c-input" value=${this.value}>
+      <span>${this.index}</span>
       <button @click=${this.edit}>Edit</button>
+      <button @click=${this.delete}>Delete</button>
     `;
   }
 
@@ -30,6 +35,15 @@ export class TodoItem extends LitElement {
       };
       this.dispatchEvent(new CustomEvent('add', options));
     }
+  }
+
+  private delete() {
+    const options = {
+      detail: {index: this.index},
+      bubbles: true,
+      composed: true,
+    }
+    this.dispatchEvent(new CustomEvent('delete', options));
   }
 }
 
