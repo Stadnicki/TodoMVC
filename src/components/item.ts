@@ -52,6 +52,7 @@ export class TodoItem extends LitElement {
   `;
 
   private toggle() {
+    this.checked = !this.checked;
     const options = {
       detail: { checked: this.checked, index: this.index},
       bubbles: true,

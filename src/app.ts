@@ -16,13 +16,13 @@ export class TodoApp extends LitElement {
 <!--          To powinno byc listą-->
           <div>
             ${this.todoList.map((todo, index) => html`
-                <todo-item .value="${todo}" .index="${index}" @delete="${this.deleteTodo} @edit="${this.editTodo}"></todo-item>
+                <todo-item .value="${todo.name}" .index="${index}" @delete="${this.deleteTodo}" @edit="${this.editTodo}"></todo-item>
             `)}
           </div>
 
           <div class="c-bottom-info">
             <div>
-              ${this.todoList.length} items left
+              ${this.todoList.filter((todo) => !todo.checked).length} items left
             </div>
            
             <div>
@@ -41,7 +41,7 @@ export class TodoApp extends LitElement {
   }
 
   addTodo(e: CustomEvent) {
-    this.todoList = [...this.todoList, e.detail.name];
+    this.todoList = [...this.todoList, e.detail];
   }
 
   deleteTodo(e: CustomEvent) {
@@ -49,7 +49,27 @@ export class TodoApp extends LitElement {
   }
 
   editTodo(e: CustomEvent) {
+    if(e.detail.checked) {
+      this.todoList = this.todoList.map((todo, index) => {
+        debugger;
+        if(index === e.detail.index) {
+          return { ...todo, checked: e.detail.checked };
+        }
+        return todo;
+      });
 
+      debugger;
+    }
+
+    if(e.detail.name) {
+        this.todoList = this.todoList.map((todo, index) => {
+            if(index === e.detail.index) {
+                return e.detail.name;
+            }
+            return todo;
+        });
+    }
+    debugger;
   }
 
   static styles = css`
