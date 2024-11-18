@@ -9,7 +9,7 @@ export class TodoApp extends LitElement {
   render() {
     return html`
       <div class="c-layout">
-        <h1>TODOS</h1>
+        <h1 class="c-header">todos</h1>
         <todo-input @add=${this.addTodo}></todo-input>
 
         <div>
@@ -21,6 +21,9 @@ export class TodoApp extends LitElement {
           </ul>
           </div>
         <div>
+          <div class="c-bottom-info">
+            
+          </div>
     `;
   }
 
@@ -37,12 +40,19 @@ export class TodoApp extends LitElement {
       width: 100%;
     }
 
+    .c-header {
+      font-size: 80px;
+      font-weight: 200;
+      color: #b83f45;
+      margin-top: 0;
+      line-height: 60px;
+    }
+    
     .c-layout {
       max-width: 400px;
       padding: 2rem;
       margin: auto;
       text-align: center;
-      background: lightgrey;
     }
   `;
 }
