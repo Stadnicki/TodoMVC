@@ -51,14 +51,11 @@ export class TodoApp extends LitElement {
   editTodo(e: CustomEvent) {
     if(e.detail.checked) {
       this.todoList = this.todoList.map((todo, index) => {
-        debugger;
         if(index === e.detail.index) {
           return { ...todo, checked: e.detail.checked };
         }
         return todo;
       });
-
-      debugger;
     }
 
     if(e.detail.name) {
@@ -69,7 +66,6 @@ export class TodoApp extends LitElement {
             return todo;
         });
     }
-    debugger;
   }
 
   static styles = css`
