@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
+import { classMap } from "lit/directives/class-map.js";
 
 @customElement('todo-item')
 export class TodoItem extends LitElement {
@@ -17,22 +18,6 @@ export class TodoItem extends LitElement {
 
   @query('.c-input', true) _input!: HTMLInputElement;
 
-  getItemView() {
-    if (this.editing) {
-      return html`
-        <input class="c-input" value=${this.value}>
-      `;
-    } else {
-      return html`
-        <input class="c-checkbox" type="checkbox" .checked=${this.checked ?? false} @change=${this.toggle}>
-        <span class="c-value"  @dblclick="${this.startEdit}">${this.value}</span>
-        <button class="c-delete" @click=${this.delete}>
-          <span aria-hidden="true">&times;</span>
-        </button>
-      `;
-    }
-  }
-
   firstUpdated() {
     this._input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -43,8 +28,20 @@ export class TodoItem extends LitElement {
   }
 
   render() {
+    const classes = { editing: this.editing };
+
     return html`
-      ${this.getItemView()}
+      <li class="${classMap(classes)}">
+        <input class="c-input" value=${this.value} @keydown="${this.onInputKeydown}" @blur="${this.edit}">
+
+        <div class="c-preview">
+          <input class="c-checkbox" type="checkbox" .checked=${this.checked ?? false} @change=${this.toggle}>
+          <span class="c-value"  @dblclick="${this.startEdit}">${this.value}</span>
+          <button class="c-delete" @click=${this.delete}>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </li>
     `;
   }
 
@@ -55,17 +52,35 @@ export class TodoItem extends LitElement {
       border-bottom: 1px solid #ededed;
     }
 
+    li {
+      flex: 1;
+    }
+
+
+    .editing {
+      .c-input {
+        display: block;
+      }
+      .c-preview{
+        display: none;
+      }
+    }
+    
+    .c-preview {
+      display: flex;
+    }
+    
     .c-value {
       flex: 1;
       text-align: left;
       word-break: break-all;
       padding: 8px 16px;
-      margin-left: 32px;
       font-size: 24px;
       color: #484848FF;
     }
     
     .c-input{
+      display: none;
       flex: 1;
       background: white;
       margin-left: 40px;
@@ -90,10 +105,6 @@ export class TodoItem extends LitElement {
       
       width: 40px;
       height: 40px;
-      //background-color: white;
-      //border-radius: 50%;
-      //vertical-align: middle;
-      //border: 1px solid #ddd;
       appearance: none;
       outline: none;
       cursor: pointer;
@@ -124,10 +135,18 @@ export class TodoItem extends LitElement {
       };
       this.dispatchEvent(new CustomEvent('edit', options));
     }
+    this.endEdit()
+  }
+
+  private onInputKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      this.edit();
+    }
   }
 
   private startEdit() {
     this.editing = true;
+    setTimeout(() => this._input.focus(), 500);
   }
 
   private endEdit() {
