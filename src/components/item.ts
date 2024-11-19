@@ -31,7 +31,7 @@ export class TodoItem extends LitElement {
         const classes = {editing: this.editing };
 
         return html`
-            <li class="${classMap(classes)}">
+            <li class="c-item${classMap(classes)}">
                 <input class="c-input" value=${this.value} @keydown="${this.onInputKeydown}" @blur="${this.edit}">
 
                 <div class="c-preview">
@@ -53,13 +53,24 @@ export class TodoItem extends LitElement {
         }
 
         li {
+            display: flex;
             flex: 1;
         }
 
+        .c-item:hover {
+            .c-delete {
+                color: #949494;
+                display: block;
+                
+                &:hover {
+                    color: #c18585;
+                }
+            }
+        }
 
         .editing {
             .c-input {
-                display: block;
+                display: flex;
             }
 
             .c-preview {
@@ -69,6 +80,7 @@ export class TodoItem extends LitElement {
 
         .c-preview {
             display: flex;
+            flex: 1;
             align-items: center;
         }
 
@@ -85,18 +97,26 @@ export class TodoItem extends LitElement {
         .c-input {
             display: none;
             flex: 1;
+            width: 100%;
             background: white;
-            margin-left: 40px;
             font-size: 24px;
-            padding: 16px;
+            padding: 16px 16px 16px 40px;
             border: none;
+            
+            &:focus-visible, &:focus {
+                box-shadow: inset 0 0 2px 2px #cf7d7d;
+                outline: 0;
+            }
         }
 
         .c-delete {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            display: none;
+            font-size: 30px;
             background: none;
-            color: red;
             border: none;
-            font: inherit;
             cursor: pointer;
             outline: inherit;
         }
@@ -149,7 +169,7 @@ export class TodoItem extends LitElement {
 
     private startEdit() {
         this.editing = true;
-        setTimeout(() => this._input.focus(), 500);
+        setTimeout(() => this._input.focus(), 1);
     }
 
     private endEdit() {

@@ -27,9 +27,3 @@ footer a {
 footer a:hover {
   text-decoration: underline
 }
-
-/* nie działa, trzeba zrobić sharowalny css */
-/*:focus-visible,:focus {*/
-/*  box-shadow: inset 0 0 2px 2px #cf7d7d !important;*/
-/*  outline: 0 !important;*/
-/*}*/

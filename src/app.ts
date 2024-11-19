@@ -2,14 +2,24 @@ import {LitElement, css, html} from 'lit';
 import {customElement, property, state} from 'lit/decorators.js';
 import {Filter} from "./filter.enum.ts";
 import {classMap} from "lit/directives/class-map.js";
+import {Todo} from "./components/todo.type.ts";
 
 @customElement('todo-app')
 export class TodoApp extends LitElement {
     @state()
-    todoList: any[] = [];
+    todoList: Todo[] = [];
 
     @property()
     filterState: Filter = Filter.All;
+
+
+    firstUpdated() {
+        this.updateFilteredItems();
+
+        addEventListener("hashchange", () => {
+            this.updateFilteredItems();
+        });
+    }
 
     updateFilteredItems() {
         const filter = window.location.hash.split('#/')[1]
@@ -26,7 +36,6 @@ export class TodoApp extends LitElement {
     }
 
     render() {
-        this.updateFilteredItems();
         return html`
             <h1 class="c-header">todos</h1>
             <div class="c-layout">
@@ -38,7 +47,8 @@ export class TodoApp extends LitElement {
                 <div class="c-layout__window">
                     <ul>
                         ${this.todoList.map((todo, index) => html`
-                            <todo-item .value="${todo.name}" .checked="${todo.checked}" .index="${index}" @delete="${this.deleteTodo}"
+                            <todo-item .value="${todo.name}" .checked="${todo.checked}" .index="${index}"
+                                       @delete="${this.deleteTodo}"
                                        @edit="${this.editTodo}" class="${classMap({hidden: todo.hidden})}"></todo-item>
                         `)}
                     </ul>
@@ -48,23 +58,20 @@ export class TodoApp extends LitElement {
                             ${this.todoList.filter((todo) => !todo.checked).length} items left
                         </div>
 
-                        <div>
+                        <div class="c-filters">
                             ${this.getFilterItem(Filter.All)}
                             ${this.getFilterItem(Filter.Active)}
                             ${this.getFilterItem(Filter.Completed)}
                         </div>
-
-                        <div>
-                            <button class="c-clear" @click="${this.clearCompleted}">Clear Completed</button>
-                        </div>
+                        
+                        <button class="c-clear${classMap({hidden: this.todoList.every(todo => !todo.checked)})}" @click="${this.clearCompleted}">Clear Completed</button>
                     </div>
                 </div>
-                <div>
+            <div>
         `;
     }
 
     clearCompleted() {
-        debugger;
         this.todoList = this.todoList.filter((todo) => !todo.checked);
     }
 
@@ -74,8 +81,8 @@ export class TodoApp extends LitElement {
     }
 
     setFilter(filter: Filter) {
-        debugger;
         this.filterState = filter;
+        this.updateFilteredItems();
     }
 
     toggleAll() {
@@ -92,22 +99,14 @@ export class TodoApp extends LitElement {
     }
 
     editTodo(e: CustomEvent) {
-        if (e.detail.checked) {
-            this.todoList = this.todoList.map((todo, index) => {
-                if (index === e.detail.index) {
-                    return {...todo, checked: e.detail.checked};
-                }
-                return todo;
-            });
-        }
+        this.todoList = this.todoList.map((todo, index) =>
+            index === e.detail.index ? {...todo, checked: e.detail.checked} : todo
+        );
 
         if (e.detail.name) {
-            this.todoList = this.todoList.map((todo, index) => {
-                if (index === e.detail.index) {
-                    return {...todo, name: e.detail.name}
-                }
-                return todo;
-            });
+            this.todoList = this.todoList.map((todo, index) =>
+                index === e.detail.index ? {...todo, name: e.detail.name} : todo
+            );
         }
     }
 
@@ -118,6 +117,7 @@ export class TodoApp extends LitElement {
                 outline: 0 !important;
             }
         }
+        
 
         .c-mark-container {
             display: flex;
@@ -127,7 +127,7 @@ export class TodoApp extends LitElement {
                 display: none;
             }
         }
-        
+
         .c-mark {
             position: absolute;
             padding: 18px;
@@ -139,24 +139,40 @@ export class TodoApp extends LitElement {
             transform: rotate(90deg);
             cursor: pointer;
         }
-        
+
         .hidden {
             display: none;
         }
-
+        
         .c-clear {
+            margin-left: auto;
             cursor: pointer;
             text-decoration: none;
             appearance: none;
             background: none;
             border: 0;
             font-size: 100%;
+            
+            .hidden {
+                visibility: hidden;
+            }
 
             &:hover {
                 text-decoration: underline;
             }
         }
 
+        .c-filters {
+            position: absolute;
+            left: 0;
+            right: 0;
+
+
+            @media (max-width: 450px) {
+                padding-top: 24px;
+            }
+        }
+        
         .c-filter {
             border: 1px solid transparent;
             border-radius: 3px;
@@ -167,6 +183,11 @@ export class TodoApp extends LitElement {
 
             &:hover {
                 border-color: #db7676;
+            }
+
+            &:focus {
+                box-shadow: 0 0 2px 2px #cf7d7d;
+                outline: 0;
             }
         }
 
@@ -183,8 +204,8 @@ export class TodoApp extends LitElement {
         }
 
         :focus-visible, :focus {
-            box-shadow: inset 0 0 2px 2px #cf7d7d !important;
-            outline: 0 !important;
+            box-shadow: inset 0 0 2px 2px #cf7d7d;
+            outline: 0;
         }
 
         ul {
@@ -210,18 +231,21 @@ export class TodoApp extends LitElement {
         }
 
         .c-bottom-info {
-            display: flex;
             height: 20px;
-            padding: 10px 15px;
-            justify-content: space-between;
+            display: flex;
+            padding: 10px 16px;
             background: white;
 
-            box-shadow: 
-            0 1px 1px rgba(0, 0, 0, .2),
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .2),
             0 8px 0 -3px #f6f6f6,
             0 9px 1px -3px rgba(0, 0, 0, .2),
             0 16px 0 -6px #f6f6f6,
             0 17px 2px -6px rgba(0, 0, 0, .2);
+
+
+            @media (max-width: 450px) {
+                height: 40px;
+            }
             
             &.hidden {
                 display: none;
