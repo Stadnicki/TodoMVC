@@ -7,7 +7,7 @@ export class TodoInput extends LitElement {
 
     render() {
         return html`
-            <input class="c-input" placeholder="What needs to be done?">
+            <input class="c-input" placeholder="What needs to be done?" autofocus>
         `;
     }
 
@@ -33,7 +33,7 @@ export class TodoInput extends LitElement {
         .c-input {
             width: 100%;
             background: white;
-            padding: 16px 16px 16px 60px;
+            padding: 18px 18px 18px 60px;
             border: none;
             box-shadow: inset 0 -2px 1px #00000008;
             font-size: 24px;

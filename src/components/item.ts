@@ -69,14 +69,16 @@ export class TodoItem extends LitElement {
 
         .c-preview {
             display: flex;
+            align-items: center;
         }
 
         .c-value {
             flex: 1;
             text-align: left;
             word-break: break-all;
-            padding: 8px 16px;
+            padding: 16px;
             font-size: 24px;
+            line-height: 1.2;
             color: #484848FF;
         }
 

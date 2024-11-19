@@ -28,9 +28,9 @@ export class TodoApp extends LitElement {
     render() {
         this.updateFilteredItems();
         return html`
+            <h1 class="c-header">todos</h1>
             <div class="c-layout">
-                <h1 class="c-header">todos</h1>
-                <div class="c-mark-container">
+                <div class="c-mark-container${classMap({hidden: !this.todoList.length})}">
                     <button class="c-mark" @click="${this.toggleAll}">❯</button>
                 </div>
                 <todo-input @add=${this.addTodo}></todo-input>
@@ -43,7 +43,7 @@ export class TodoApp extends LitElement {
                         `)}
                     </ul>
 
-                    <div class="c-bottom-info">
+                    <div class="c-bottom-info${classMap({hidden: !this.todoList.length})}">
                         <div>
                             ${this.todoList.filter((todo) => !todo.checked).length} items left
                         </div>
@@ -122,11 +122,15 @@ export class TodoApp extends LitElement {
         .c-mark-container {
             display: flex;
             height: 0;
+
+            &.hidden {
+                display: none;
+            }
         }
         
         .c-mark {
             position: absolute;
-            padding: 16px;
+            padding: 18px;
             border: none;
             background: none;
             align-content: center;
@@ -189,20 +193,20 @@ export class TodoApp extends LitElement {
         }
 
         .c-header {
+            text-align: center;
             font-size: 80px;
             font-weight: 200;
             color: #b83f45;
-            margin-top: 0;
-            margin-bottom: 36px;
+            margin: 36px;
             line-height: 60px;
         }
 
         .c-layout {
             min-width: 230px;
             max-width: 550px;
-            padding: 2rem;
             margin: auto;
             text-align: center;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .2), 0 25px 50px 0 rgba(0, 0, 0, .1);
         }
 
         .c-bottom-info {
@@ -212,9 +216,16 @@ export class TodoApp extends LitElement {
             justify-content: space-between;
             background: white;
 
-            box-shadow: rgba(0, 0, 0, 0.2) 0 1px 1px, white 0 8px 0 -3px,
-            rgba(0, 0, 0, 0.2) 0 9px 1px -3px, white 0 16px 0 -6px,
-            rgba(0, 0, 0, 0.2) 0 17px 2px -6px;
+            box-shadow: 
+            0 1px 1px rgba(0, 0, 0, .2),
+            0 8px 0 -3px #f6f6f6,
+            0 9px 1px -3px rgba(0, 0, 0, .2),
+            0 16px 0 -6px #f6f6f6,
+            0 17px 2px -6px rgba(0, 0, 0, .2);
+            
+            &.hidden {
+                display: none;
+            }
         }
     `;
 }
