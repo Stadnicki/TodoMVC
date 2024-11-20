@@ -50,13 +50,10 @@ export class TodoInput extends LitElement {
     private add() {
         const name = this._input.value.trim();
         if (name) {
-            const options = {
-                detail: {name},
-                bubbles: true,
-                composed: true,
-            };
             this._input.value = '';
-            this.dispatchEvent(new CustomEvent('add', options));
+            this.dispatchEvent(new CustomEvent('add', {
+                detail: {name},
+            }));
         }
     }
 }

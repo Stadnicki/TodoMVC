@@ -130,7 +130,7 @@ export class TodoApp extends LitElement {
 
         .c-mark {
             position: absolute;
-            padding: 18px;
+            padding: 18px 28px;
             border: none;
             background: none;
             align-content: center;
@@ -146,6 +146,7 @@ export class TodoApp extends LitElement {
         
         .c-clear {
             margin-left: auto;
+            height: fit-content;
             cursor: pointer;
             text-decoration: none;
             appearance: none;

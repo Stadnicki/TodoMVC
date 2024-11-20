@@ -140,23 +140,17 @@ export class TodoItem extends LitElement {
 
     private toggle() {
         this.checked = !this.checked;
-        const options = {
+        this.dispatchEvent(new CustomEvent('edit', {
             detail: {checked: this.checked, index: this.index},
-            bubbles: true,
-            composed: true,
-        }
-        this.dispatchEvent(new CustomEvent('edit', options));
+        }));
     }
 
     private edit() {
         const name = this._input.value.trim();
         if (name) {
-            const options = {
+            this.dispatchEvent(new CustomEvent('edit',  {
                 detail: {name, index: this.index},
-                bubbles: true,
-                composed: true,
-            };
-            this.dispatchEvent(new CustomEvent('edit', options));
+            }));
         }
         this.endEdit()
     }
@@ -177,12 +171,9 @@ export class TodoItem extends LitElement {
     }
 
     private delete() {
-        const options = {
+        this.dispatchEvent(new CustomEvent('delete', {
             detail: {index: this.index},
-            bubbles: true,
-            composed: true,
-        }
-        this.dispatchEvent(new CustomEvent('delete', options));
+        }));
     }
 }
 
